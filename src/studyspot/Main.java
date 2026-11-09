@@ -63,7 +63,7 @@ public class Main {
                 continue;
             }
 
-            if (selection == 8) {
+            if (selection == 7) {
                 running = false;
                 messageView.showMessage("Thank you for using StudySpot!");
             }
