@@ -1,8 +1,11 @@
 package studyspot;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,13 +36,15 @@ public class MessageViewTest {
 
 
     @Test
-    public void testShowMessageStoresAndDisplaysConfirmation() {
+    public void testShowMessagePrintsToConsole() {
         MessageView view = new MessageView();
 
-        view.showMessage("Student added.");
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
 
-        assertEquals("Student added.", view.message);
-        assertTrue(output.toString().contains("Student added."));
+        view.showMessage("Hello");
+
+        assertTrue(outContent.toString().contains("Hello"));
     }
 
 
@@ -53,4 +58,25 @@ public class MessageViewTest {
         assertTrue(errorOutput.toString().contains(
             "Warning: No student selected."));
     }
+
+    @Test 
+    public void testShowMessageOverwritesPreviousMessage() {
+        MessageView view = new MessageView();
+
+        view.showMessage("First message");
+        view.showMessage("Second message");
+
+        assertEquals("Second message", view.message);
+    }
+
+    @Test
+    public void testShowMessageWithNull()
+    {
+        MessageView view = new MessageView();
+
+        view.showMessage(null);
+
+        assertNull(view.message);
+    }
+    
 }
