@@ -61,5 +61,3 @@ Jaden and I will handle the save manager, while Catherine and Ethan will handle 
 ## GenAI use
 
 We used GenAI tools solely for assistance and understanding, now for reviewing the program. ChatGPT was used to assist us in debugging, JUnit tests, and integration. Some team members used Claude and Gemini for their designs. However, our team reviews allowed us to overcome presenting code we cannot explain.
-
-Over-reliance could leave hidden bugs or cause a teammate to present code they cannot explain. Next time, the team would use GenAI earlier in planning to compare possible approaches and anticipate integration issues, while continuing to check code and behavior independently.
