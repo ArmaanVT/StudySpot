@@ -3,89 +3,73 @@
 // As a Hokie, I will conduct myself with honor and integrity at all times.
 // I will not lie, cheat, or steal, nor will I accept the actions of those who
 // do.
-// -- Armaan (906801008)
-
+// -- Armaan 
+//
 // LLM Statement:
 // See README.md
+
 
 package studyspot;
 
 import java.util.Scanner;
 
-// -------------------------------------------------------------------------
 /**
  * This class serves as the entry point.
- * 
+ *
  * @author Armaan
- * @version 2026.11.08
+ * @version 2026.11.09
  */
 public class Main {
-
     /**
-     * The main driver class.
-     * 
+     * Starts the application.
+     *
      * @param args
-     *            default arguments.
+     *            The default args parameter.
      */
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
 
-        StudyRoom studyRoom = new StudyRoom();
-        
         // Model.
-        StudySpot model = new StudySpot(studyRoom);
-        
+        StudySpot model = new StudySpot(new StudyRoom());
+
         // Views.
-        MainMenuView mainMenuView = new MainMenuView();
-        StudyRoomView studyRoomView = new StudyRoomView();
-        StudentView studentView = new StudentView();
-        WaitlistView waitlistView = new WaitlistView();
+        MainMenuView mainMenu = new MainMenuView();
+        StudyRoomView roomView = new StudyRoomView();
+        StudentView studentView = new StudentView(scanner);
+        WaitlistView waitlistView = new WaitlistView(scanner);
         MessageView messageView = new MessageView();
-        
+
         // Controller.
         StudySpotController controller = new StudySpotController(model,
-            mainMenuView, studyRoomView, studentView, waitlistView,
-            messageView);
+            mainMenu, roomView, studentView, waitlistView, messageView);
 
         boolean running = true;
-        
-        // Main loop.
+
+        // Starts the main loop.
         while (running) {
+            controller.displayMainMenu();
+
+            System.out.print("Enter your choice: ");
+
+            String input = scanner.nextLine().trim();
+
+            int selection;
 
             try {
-                controller.displayMainMenu();
-
-                System.out.print("Enter your choice: ");
-
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number.");
-                    scanner.nextLine();
-                    continue;
-                }
-
-                int selection = scanner.nextInt();
-
-                // Exit option
-                if (selection == 8) {
-                    running = false;
-                    System.out.println("Thank you for using StudySpot!");
-                }
-
-                else {
-                    controller.handleMenuSelection(selection);
-                }
-
+                selection = Integer.parseInt(input);
             }
-            
-            // Catches any exceptions.
-            catch (Exception e) {
+            catch (NumberFormatException e) {
+                messageView.showError("Invalid input. Please enter a number.");
+                continue;
+            }
 
-                System.out.println("An error occurred: " + e.getMessage());
-                System.out.println("Returning to the main menu...");
+            if (selection == 8) {
+                running = false;
+                messageView.showMessage("Thank you for using StudySpot!");
+            }
+            else {
+                controller.handleMenuSelection(selection);
             }
         }
-
-        scanner.close();
     }
 }
