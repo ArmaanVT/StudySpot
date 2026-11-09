@@ -1,0 +1,72 @@
+package studyspot;
+import java.util.Scanner;
+
+public class WaitlistView{
+    
+    private Scanner scanner;
+    private String[] times;
+
+    public WaitlistView()
+    {
+        scanner = new Scanner(System.in);
+        times = new String[16];
+        times[0] = "8:00 AM";
+        times[1] = "9:00 AM";
+        times[2] = "10:00 AM";
+        times[3] = "11:00 AM";
+        times[4] = "12:00 PM";
+        times[5] = "1:00 PM";
+        times[6] = "2:00 PM";
+        times[7] = "3:00 PM";
+        times[8] = "4:00 PM";
+        times[9] = "5:00 PM";
+        times[10] = "6:00 PM";
+        times[11] = "7:00 PM";
+        times[12] = "8:00 PM";
+        times[13] = "9:00 PM";
+        times[14] = "10:00 PM";
+        times[15] = "11:00 PM";
+        
+        
+         
+    }
+   
+    public int getHour() {
+        displayList();
+        System.out.println("Please enter the number of the study room time you'd like to modify: ");
+        int userInput = scanner.nextInt();
+        return userInput +7;
+        
+        
+        
+        
+    }
+    
+    public void displayList() {
+        
+        System.out.println("Study Room Times for Today: ");
+        
+        for(int i = 0; i<times.length; i++) {
+            System.out.println((i+1)+": "+ times[i]);
+        }
+        
+    }
+    
+    
+    public void displayWaitlist(Queue queue) {
+        
+        if (queue.isEmpty()) {
+            System.out.println("The waitlist for this time currently has no students. ");
+        }
+        else {
+            Student[] students = queue.toArray();
+            
+            for(int i = 0; i<students.length; i++) {
+                System.out.println((i+1)+": "+ students[i].getName());
+            }
+        }
+        
+        
+    }
+    
+}
