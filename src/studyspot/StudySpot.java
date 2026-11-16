@@ -8,7 +8,6 @@
 // LLM Statement:
 // See README.md
 
-
 package studyspot;
 
 import java.io.Serializable;
@@ -122,6 +121,51 @@ public class StudySpot implements Serializable {
 
 
     /**
+     * Moves a student from their current waitlist to a different hour.
+     * The operation validates the destination before removing the student,
+     * so a failed move leaves the original queue unchanged.
+     *
+     * @param student
+     *            student to move
+     * @param newHour
+     *            destination hour in 24-hour format
+     * @throws IllegalArgumentException
+     *             if the student is not waiting, the
+     *             destination is invalid/past, or it is their current hour
+     */
+    public void changeWaitlistHour(Student student, int newHour) {
+        validateHour(newHour);
+        if (student == null) {
+            throw new IllegalArgumentException("Student cannot be null.");
+        }
+        if (newHour < currentHour) {
+            throw new IllegalArgumentException(
+                "Cannot move a student to a past time slot.");
+        }
+
+        int oldHour = -1;
+        for (Map.Entry<Integer, Queue> entry : waitingQueues.entrySet()) {
+            if (entry.getValue().contains(student)) {
+                oldHour = entry.getKey();
+                break;
+            }
+        }
+        if (oldHour == -1) {
+            throw new IllegalArgumentException(
+                "Student is not currently on a waitlist.");
+        }
+        if (oldHour == newHour) {
+            throw new IllegalArgumentException(
+                "Student is already on that waitlist.");
+        }
+
+        waitingQueues.get(oldHour).remove(student);
+        waitingQueues.computeIfAbsent(newHour, ignored -> new Queue()).enqueue(
+            student);
+    }
+
+
+    /**
      * Advances the simulated clock by one hour.
      *
      * @throws IllegalStateException
@@ -190,6 +234,33 @@ public class StudySpot implements Serializable {
             }
         }
         return false;
+    }
+
+
+    /**
+     * Finds a registered student by name, ignoring case.
+     *
+     * @param name
+     *            student name to find
+     * @return the registered student, or null if no match exists
+     */
+    public Student findRegisteredStudent(String name) {
+        if (name == null) {
+            return null;
+        }
+        for (Student student : studyRoom.getStudents()) {
+            if (student.getName().equalsIgnoreCase(name.trim())) {
+                return student;
+            }
+        }
+        for (Queue queue : waitingQueues.values()) {
+            for (Student student : queue.toArray()) {
+                if (student.getName().equalsIgnoreCase(name.trim())) {
+                    return student;
+                }
+            }
+        }
+        return null;
     }
 
 

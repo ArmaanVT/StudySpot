@@ -13,6 +13,8 @@ package studyspot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Main controller for StudySpot. Coordinates the model and its views.
@@ -21,13 +23,15 @@ import java.util.List;
  * @version 2026.11.09
  */
 public class StudySpotController {
-    private final StudySpot model;
+    private StudySpot model;
     private final MainMenuView mainMenuView;
     private final StudyRoomView studyRoomView;
     private final StudentView studentView;
     private final WaitlistView waitlistView;
     private final MessageView messageView;
     private Student selectedStudent;
+    private final SaveManager saveManager;
+    private final Path saveFile;
 
     /**
      * Creates a controller connected to the model and all views.
@@ -52,9 +56,26 @@ public class StudySpotController {
         StudentView studentView,
         WaitlistView waitlistView,
         MessageView messageView) {
+        this(model, mainMenuView, studyRoomView, studentView, waitlistView,
+            messageView, new SaveManager(), Path.of("studyspot.save"));
+    }
+
+
+    /**
+     * Creates a controller with an explicit save destination.
+     */
+    public StudySpotController(
+        StudySpot model,
+        MainMenuView mainMenuView,
+        StudyRoomView studyRoomView,
+        StudentView studentView,
+        WaitlistView waitlistView,
+        MessageView messageView,
+        SaveManager saveManager,
+        Path saveFile) {
         if (model == null || mainMenuView == null || studyRoomView == null
             || studentView == null || waitlistView == null
-            || messageView == null) {
+            || messageView == null || saveManager == null || saveFile == null) {
             throw new IllegalArgumentException(
                 "Controller dependencies cannot be null.");
         }
@@ -64,6 +85,8 @@ public class StudySpotController {
         this.studentView = studentView;
         this.waitlistView = waitlistView;
         this.messageView = messageView;
+        this.saveManager = saveManager;
+        this.saveFile = saveFile;
     }
 
 
@@ -71,7 +94,7 @@ public class StudySpotController {
      * Handles a numbered main-menu selection.
      *
      * @param selection
-     *            selected menu option (1–7)
+     *            selected menu option (1–10)
      */
     public void handleMenuSelection(int selection) {
         try {
@@ -95,6 +118,16 @@ public class StudySpotController {
                     processAdvanceHour();
                     break;
                 case 7:
+                    processChangeWaitlistHour();
+                    break;
+                case 8:
+                    processSave();
+                    break;
+                case 9:
+                    processLoad();
+                    break;
+                case 10:
+                    processSave();
                     messageView.showMessage("Thank you for using StudySpot!");
                     break;
                 default:
@@ -116,28 +149,13 @@ public class StudySpotController {
 
 
     /**
-     * Selects a student and remembers the selection for the next action.
-     */
-    public void getStudent() {
-        Student student = studentView.getStudent();
-        if (student == null) {
-            selectedStudent = null;
-            messageView.showError("No student selected.");
-            return;
-        }
-        selectedStudent = student;
-        messageView.showMessage("Selected student: " + student.getName());
-    }
-
-
-    /**
      * Adds the selected student to the next appropriate destination. If the
      * student is already waiting at the current hour, this action admits them
      * to the room; otherwise it creates a reservation for the next available
      * hour.
      */
     public void processAddStudent() {
-        Student student = studentView.getStudent();
+        Student student = studentView.selectStudent(model);
         if (student == null) {
             student = selectedStudent;
         }
@@ -186,7 +204,7 @@ public class StudySpotController {
      * Removes a selected student from all waitlists.
      */
     public void processRemoveStudent() {
-        Student student = studentView.getStudent();
+        Student student = studentView.selectStudent(model);
         if (student == null) {
             student = selectedStudent;
         }
@@ -213,6 +231,50 @@ public class StudySpotController {
         else {
             messageView.showMessage(admittedStudent.getName()
                 + " has been admitted to the study room.");
+        }
+    }
+
+
+    /**
+     * Moves a selected student to another scheduled waitlist hour.
+     */
+    public void processChangeWaitlistHour() {
+        Student student = studentView.selectStudent(model);
+        if (student == null) {
+            messageView.showError("No student selected.");
+            return;
+        }
+        int newHour = waitlistView.getHour();
+        model.changeWaitlistHour(student, newHour);
+        messageView.showMessage(student.getName() + " has been moved to "
+            + formatHourOfDay(newHour) + ".");
+    }
+
+
+    /** Saves the current model to the configured save file. */
+    public void processSave() {
+        try {
+            saveManager.save(model, saveFile);
+            messageView.showMessage("StudySpot has been saved.");
+        }
+        catch (IOException e) {
+            messageView.showError("Unable to save StudySpot: " + e
+                .getMessage());
+        }
+    }
+
+
+    /** Loads the configured save file and replaces the current model state. */
+    public void processLoad() {
+        try {
+            StudySpot restored = saveManager.load(saveFile);
+            model = restored;
+            selectedStudent = null;
+            messageView.showMessage("StudySpot has been loaded.");
+        }
+        catch (IOException e) {
+            messageView.showError("Unable to load StudySpot: " + e
+                .getMessage());
         }
     }
 

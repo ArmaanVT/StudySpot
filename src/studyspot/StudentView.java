@@ -54,12 +54,14 @@ public class StudentView {
 
 
     /**
-     * Prompts for and returns a student. A blank or unknown selection returns
+     * Prompts for and selects a student. A blank or unknown selection returns
      * null.
      *
+     * @param model
+     *            current model, used to resolve previously registered students
      * @return selected student, or null when no valid student was selected
      */
-    public Student getStudent() {
+    public Student selectStudent(StudySpot model) {
         // A preselected value is useful for controller tests and programmatic
         // callers; consume it once, then use the interactive prompt normally.
         if (selectedStudent != null) {
@@ -70,6 +72,10 @@ public class StudentView {
         displayList();
         System.out.print("Choose a student (enter a name): ");
         String userInput = scanner.nextLine().trim();
+        Student registered = model.findRegisteredStudent(userInput);
+        if (registered != null) {
+            return registered;
+        }
         for (Student student : students) {
             if (student.getName().equalsIgnoreCase(userInput)) {
                 return student;
@@ -89,13 +95,4 @@ public class StudentView {
         }
     }
 
-
-    /**
-     * Returns a copy of the available student list.
-     *
-     * @return available students
-     */
-    public List<Student> getStudents() {
-        return List.copyOf(students);
-    }
 }

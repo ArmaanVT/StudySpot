@@ -3,11 +3,10 @@
 // As a Hokie, I will conduct myself with honor and integrity at all times.
 // I will not lie, cheat, or steal, nor will I accept the actions of those who
 // do.
-// -- Armaan 
+// -- Armaan
 //
 // LLM Statement:
 // See README.md
-
 
 package studyspot;
 
@@ -30,7 +29,19 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         // Model.
-        StudySpot model = new StudySpot(new StudyRoom());
+        SaveManager saveManager = new SaveManager();
+        java.nio.file.Path saveFile = java.nio.file.Path.of("studyspot.save");
+        StudySpot model;
+        try {
+            model = java.nio.file.Files.exists(saveFile)
+                ? saveManager.load(saveFile)
+                : new StudySpot(new StudyRoom());
+        }
+        catch (java.io.IOException e) {
+            System.out.println("Could not load save; starting a new session: "
+                + e.getMessage());
+            model = new StudySpot(new StudyRoom());
+        }
 
         // Views.
         MainMenuView mainMenu = new MainMenuView();
@@ -41,7 +52,8 @@ public class Main {
 
         // Controller.
         StudySpotController controller = new StudySpotController(model,
-            mainMenu, roomView, studentView, waitlistView, messageView);
+            mainMenu, roomView, studentView, waitlistView, messageView,
+            saveManager, saveFile);
 
         boolean running = true;
 
@@ -63,13 +75,10 @@ public class Main {
                 continue;
             }
 
-            if (selection == 7) {
+            if (selection == 10) {
                 running = false;
-                messageView.showMessage("Thank you for using StudySpot!");
             }
-            else {
-                controller.handleMenuSelection(selection);
-            }
+            controller.handleMenuSelection(selection);
         }
     }
 }

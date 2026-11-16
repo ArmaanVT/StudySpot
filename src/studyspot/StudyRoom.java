@@ -98,16 +98,6 @@ public class StudyRoom implements Serializable {
      *
      * @return students currently in the room
      */
-    public List<Student> getStudent() {
-        return getStudents();
-    }
-
-
-    /**
-     * Returns a read-only view of the students in the room.
-     *
-     * @return students currently in the room
-     */
     public List<Student> getStudents() {
         return Collections.unmodifiableList(students);
     }

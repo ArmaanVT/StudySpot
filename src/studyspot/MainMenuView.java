@@ -19,9 +19,9 @@ import java.util.List;
  * @version 2026.11.09
  */
 public class MainMenuView {
-    private static final String[] OPTIONS = { "Add student",
-        "Remove student", "Admit student", "View Waitlist", "View Study Room",
-        "Advance Hour", "Exit" };
+    private static final String[] OPTIONS = { "Add student", "Remove student",
+        "Admit student", "View Waitlist", "View Study Room", "Advance Hour",
+        "Change Waitlist Hour", "Save", "Load", "Exit" };
 
     /**
      * Displays the menu.
