@@ -1,63 +1,93 @@
-# StudySpot — Project 3 preliminary Build
+# StudySpot — Project 3
 
-StudySpot is a Java console application that allows you to admit or remove students into a study room.
+StudySpot is a Java console application for managing a study room and hourly student waitlists. It uses a linked FIFO queue so students waiting for the same hour are admitted in the order they joined.
+
+Team: Armaan, Jaden, Catherine, and Ethan.
 
 ## How to Run
 
-Import the repository into eclipse, right-click the project and select "run-as Java application." Finally, if it prompts, selected "main."
+1. Import the repository into Eclipse as an existing Java project.
+2. Open src/studyspot/Main.java.
+3. Right-click Main.java and select **Run As > Java Application**. If prompted, choose **studyspot.Main**.
+4. Use the numbered menu in the Eclipse Console.
+
+The project includes JUnit tests. Make sure the required JUnit libraries are on the project's build path before running the tests.
+
+## Current Features
+
+- Add students and remove them from waitlists.
+- Admit the next student from the current hour's waitlist using FIFO order.
+- View an hourly waitlist or the current study room occupants.
+- Advance the simulated clock by one hour. The day starts at 8 AM, and waitlist hours run from 8 AM through 11 PM.
+- Change a student's scheduled waitlist hour.
+- Save and load the current session.
+- Display a to-do list based on the current application state.
+
+### Saving and Loading
+
+Choose **Save** to write the current hour, waitlists, and study room state to studyspot.save in the application's working directory. Choose **Load** to restore the saved session; this replaces the current in-memory state. The program also attempts to load this file at startup and save when **Exit** is selected.
+
+SaveManager uses Java serialization to store the model. If a save cannot be loaded at startup, the program displays an error and starts a new session. Save and load errors from the menu are also displayed to the user.
+
+### Changing a Waitlist Hour
+
+Choose **Change Waitlist Hour**, select a waiting student, and enter the destination hour. StudySpot checks that the hour is valid, has not passed, and is different from the student's existing waitlist hour. It also checks that the student is currently waiting. A valid move removes the student from the original queue and adds them to the back of the destination queue. Invalid moves leave the original queue unchanged.
 
 ## Reflection
 
-When moving from specification to code, we realized that a to-do-list view would be beneficial to show the user what is needed to be done. The project has multiple moving parts, and we thought it would be beneficial to include it. However, we largely kept the application the same from the specification document. The to-do-list was our biggest change.
+We kept most of the original specification, including separate model, view, and controller classes. Student, Queue, StudyRoom, and StudySpot manage the application data and rules. The view classes handle console input and output, while StudySpotController connects the menu actions to the model.
 
-We added helper behavior (helper methods), such as determining the next available hour.
+The to-do list was one change from our original design. It helps show which students need to be admitted. We also added helper methods for finding the next available hour and locating a registered student by name.
 
-We kept the model separate from the view classes. Classes, such as Student, Queue, StudyRoom, and StudySpot do not need to know how the menu is displayed or how the user enters information. The controller communicates between the model and view classes.
+Since the preliminary build, SaveManager has been implemented and connected to the application. It saves the full model so the current hour, waitlists, and room occupants can be restored together. Main handles startup loading, and the controller handles the Save and Load menu options.
 
-We did not have to move view-related code into the model to make it work.
+The planned stretch feature, changing a student's waitlist hour, is also implemented. This required changes across the model, controller, and menu. The model validates the move before removing the student from the original queue, which prevents an invalid request from losing their reservation.
 
-During our implementation, and with the help of generative AI, we figured out how to maintain separate waitlists for different hours, and how to use a FIFO queue to determine which students should be admitted first. 
+GenAI assisted the development process, including work on hourly waitlists, FIFO behavior, serialization, debugging, and tests. Armaan also reported using GenAI for the latest implementation update.
 
-Also, according to GenAI, we decided to implement a "serializable" data structure to make writing to files easier when implementing the save feature. A serializable data structure allows you to store a copy of an object as bytes.
+## Testing and Remaining Checks
 
-As of now, our save manager does not work yet. We still have to implement that feature.
+SaveManagerTest includes tests for restoring the current hour and waitlists, restoring room occupants, rejecting null arguments, and reporting a missing save file. The repository also contains tests for the queue, student, study room, model, controller, and several views.
 
-## Next Steps
+The presence of test files does not establish that the current test suite passes. The tests were not executed as part of this README update.
 
-In the MVP, we still need to add our save manager. 
-
-A non-trivial feature we will attempt to implement will be changing a students scheduled waitlist hour.
-We predict that this feature will affect the model, as StudySpot will need a new method to remove a student from their current waitlist and add them to a different hour; the controller, as StudySpotController will need to process and handle this request; and view, as the view will need a new menu option.
-We will add tests to confirm that a student has been moved from one waitlist to another. 
-
-Jaden and I will handle the save manager, while Catherine and Ethan will handle the stretch goal.
+Useful regression checks are to move a student between hours and confirm FIFO order, reject invalid moves without changing the original queue, and save/reload a session after making changes. Existing menu and controller tests should also be checked against the updated ten-option menu.
 
 ## Attribution
 
+The original contribution records are retained below, with the latest implementation changes added. StudentViewTest.java is listed as a historical contribution because it was removed in the latest update.
+
 | File | Contributor(s) | Contribution and method |
 |---|---|---|
-| `MainMenuView.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `MainMenuViewTest.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `MessageView.java` | Ethan | Drafted; Used the assistance of GenAI |
-| `Node.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `NodeTest.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `Queue.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `QueueTest.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `Student.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `StudentTest.java` | Jaden | Drafted; Used the assistance of GenAI |
-| `StudentView.java` | Catherine | Drafted; Used the assistance of GenAI |
-| `StudentViewTest.java` | Catherine | Drafted; Used the assistance of GenAI |
-| `StudyRoom.java` | Ethan | Drafted; Used the assistance of GenAI |
-| `StudyRoomTest.java` | Ethan | Drafted; Used the assistance of GenAI |
-| `StudyRoomView.java` | Ethan | Drafted; Used the assistance of GenAI |
-| `StudySpot.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `StudySpotController.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `StudySpotControllerTest.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `StudySpotTest.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `WaitlistView.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `WaitlistViewTest.java` | Armaan | Drafted; Used the assistance of GenAI |
-| `README.md` | All members | Team reviewied |
+| Main.java | Armaan | Application entry point and startup save/load integration; GenAI assistance disclosed |
+| MainMenuView.java | Jaden; Armaan | Original draft by Jaden with GenAI assistance; latest menu update committed by Armaan |
+| MainMenuViewTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| MessageView.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
+| Node.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| NodeTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| Queue.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| QueueTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| SaveManager.java | Armaan | Save/load implementation; GenAI assistance disclosed for the latest update |
+| SaveManagerTest.java | Armaan | Save/load tests; GenAI assistance disclosed for the latest update |
+| Student.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| StudentTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
+| StudentView.java | Catherine; Armaan | Original draft by Catherine with GenAI assistance; registered-student lookup update committed by Armaan |
+| StudentViewTest.java (removed) | Catherine | Original draft with GenAI assistance; removed in the latest update |
+| StudyRoom.java | Ethan; Armaan | Original draft by Ethan with GenAI assistance; latest cleanup committed by Armaan |
+| StudyRoomTest.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
+| StudyRoomView.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
+| StudySpot.java | Armaan | Model and waitlist-hour changes; GenAI assistance disclosed |
+| StudySpotController.java | Armaan | Controller, save/load, and waitlist-hour integration; GenAI assistance disclosed |
+| StudySpotControllerTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
+| StudySpotTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
+| WaitlistView.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
+| WaitlistViewTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
+| README.md | All members; Jaden | Original team documentation; latest revision prepared at Jaden's request with ChatGPT assistance |
 
-## GenAI use
+## GenAI Use
 
-We used GenAI tools solely for assistance and understanding, now for reviewing the program. ChatGPT was used to assist us in debugging, JUnit tests, and integration. Some team members used Claude and Gemini for their designs. However, our team reviews allowed us to overcome presenting code we cannot explain.
+The preliminary README recorded ChatGPT assistance with debugging, JUnit tests, and integration, and Claude and Gemini assistance with some team members' designs. It also recorded GenAI assistance with hourly waitlists, FIFO queues, and Java serialization.
+
+Armaan confirmed that he used GenAI for the latest implementation update, which added SaveManager, waitlist-hour changes, and related integration and tests. This disclosure does not identify a specific tool or prompt for that update because those details were not provided.
+
+ChatGPT was used to review the visible repository code and revise this README, including the feature descriptions, run instructions, reflection, and attribution. No Java source files were changed as part of this documentation update.
