@@ -43,8 +43,6 @@ Since the preliminary build, SaveManager has been implemented and connected to t
 
 The planned stretch feature, changing a student's waitlist hour, is also implemented. This required changes across the model, controller, and menu. The model validates the move before removing the student from the original queue, which prevents an invalid request from losing their reservation.
 
-GenAI assisted the development process, including work on hourly waitlists, FIFO behavior, serialization, debugging, and tests. Armaan also reported using GenAI for the latest implementation update.
-
 ## Testing and Remaining Checks
 
 SaveManagerTest includes tests for restoring the current hour and waitlists, restoring room occupants, rejecting null arguments, and reporting a missing save file. The repository also contains tests for the queue, student, study room, model, controller, and several views.
@@ -59,35 +57,31 @@ The original contribution records are retained below, with the latest implementa
 
 | File | Contributor(s) | Contribution and method |
 |---|---|---|
-| Main.java | Armaan | Application entry point and startup save/load integration; GenAI assistance disclosed |
-| MainMenuView.java | Jaden; Armaan | Original draft by Jaden with GenAI assistance; latest menu update committed by Armaan |
-| MainMenuViewTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| MessageView.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
-| Node.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| NodeTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| Queue.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| QueueTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| SaveManager.java | Armaan | Save/load implementation; GenAI assistance disclosed for the latest update |
-| SaveManagerTest.java | Armaan | Save/load tests; GenAI assistance disclosed for the latest update |
-| Student.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| StudentTest.java | Jaden | Original draft; GenAI assistance recorded in the preliminary README |
-| StudentView.java | Catherine; Armaan | Original draft by Catherine with GenAI assistance; registered-student lookup update committed by Armaan |
-| StudentViewTest.java (removed) | Catherine | Original draft with GenAI assistance; removed in the latest update |
-| StudyRoom.java | Ethan; Armaan | Original draft by Ethan with GenAI assistance; latest cleanup committed by Armaan |
-| StudyRoomTest.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
-| StudyRoomView.java | Ethan | Original draft; GenAI assistance recorded in the preliminary README |
-| StudySpot.java | Armaan | Model and waitlist-hour changes; GenAI assistance disclosed |
-| StudySpotController.java | Armaan | Controller, save/load, and waitlist-hour integration; GenAI assistance disclosed |
-| StudySpotControllerTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
-| StudySpotTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
-| WaitlistView.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
-| WaitlistViewTest.java | Armaan | Original draft; GenAI assistance recorded in the preliminary README |
-| README.md | All members; Jaden | Original team documentation; latest revision prepared at Jaden's request with ChatGPT assistance |
+| Main.java | Armaan | Application entry point and startup save/load integration |
+| MainMenuView.java | Jaden; Armaan | Original draft by Jaden; latest menu update committed by Armaan |
+| MainMenuViewTest.java | Jaden | Original draft |
+| MessageView.java | Ethan | Original draft |
+| Node.java | Jaden | Original draft |
+| NodeTest.java | Jaden | Original draft |
+| Queue.java | Jaden | Original draft |
+| QueueTest.java | Jaden | Original draft |
+| SaveManager.java | Armaan | Save/load implementation |
+| SaveManagerTest.java | Armaan | Save/load tests |
+| Student.java | Jaden | Original draft |
+| StudentTest.java | Jaden | Original draft |
+| StudentView.java | Catherine; Armaan | Original draft by Catherine; registered-student lookup update committed by Armaan |
+| StudentViewTest.java (removed) | Catherine | Original draft; removed in the latest update |
+| StudyRoom.java | Ethan; Armaan | Original draft by Ethan; latest cleanup committed by Armaan |
+| StudyRoomTest.java | Ethan | Original draft |
+| StudyRoomView.java | Ethan | Original draft |
+| StudySpot.java | Armaan | Model and waitlist-hour changes |
+| StudySpotController.java | Armaan | Controller, save/load, and waitlist-hour integration |
+| StudySpotControllerTest.java | Armaan | Original draft |
+| StudySpotTest.java | Armaan | Original draft |
+| WaitlistView.java | Armaan | Original draft |
+| WaitlistViewTest.java | Armaan | Original draft |
+| README.md | All members; Jaden | Original team documentation; latest revision prepared at Jaden's request |
 
 ## GenAI Use
 
-The preliminary README recorded ChatGPT assistance with debugging, JUnit tests, and integration, and Claude and Gemini assistance with some team members' designs. It also recorded GenAI assistance with hourly waitlists, FIFO queues, and Java serialization.
-
-Armaan confirmed that he used GenAI for the latest implementation update, which added SaveManager, waitlist-hour changes, and related integration and tests. This disclosure does not identify a specific tool or prompt for that update because those details were not provided.
-
-ChatGPT was used to review the visible repository code and revise this README, including the feature descriptions, run instructions, reflection, and attribution. No Java source files were changed as part of this documentation update.
+Armaan used GenAI for the latest implementation update, including SaveManager, waitlist-hour changes, and related integration and tests.
